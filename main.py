@@ -1,8 +1,11 @@
 import os
 import sys
 from dotenv import load_dotenv
+from google import genai
+from google.genai import types
 
 def main():
+    """main function for boot.dev AI course"""
     if len(sys.argv) < 2 or sys.argv[1][0] == "-":
         print("error: no prompt given")
         sys.exit(1)
@@ -13,8 +16,6 @@ def main():
     load_dotenv()
     api_key = os.environ.get("GEMINI_API_KEY")
 
-    from google import genai
-    from google.genai import types
 
     messages = [
         types.Content(role="user", parts=[types.Part(text=user_prompt)]),
@@ -30,7 +31,6 @@ def main():
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     print(response.text)
-    return
 
 if __name__ == "__main__":
     main()
