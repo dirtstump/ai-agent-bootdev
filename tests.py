@@ -1,5 +1,5 @@
 """tests for get_files_info"""
-from functions.write_file import write_file
+from functions.run_python import run_python_file
 
 def main():
     """test funciton for get_files_info"""
@@ -9,7 +9,7 @@ def main():
         ("calculator", "../main.py"),
         ("calculator", "nonexistent.py"),
     ]
-    list(map(lambda i: print(write_file(i[0], i[1], i[2])), cases))
+    list(map(lambda i: print(run_python_file(i[0], i[1])), cases))
 
 if __name__ == "__main__":
     main()
