@@ -4,6 +4,7 @@ import sys
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+import call_function
 
 def main():
     """main function for boot.dev AI course"""
@@ -41,21 +42,29 @@ def main():
             system_instruction=system_prompt,
         ),
     )
+    verbose = False
     if "--verbose" in sys.argv:
+        verbose = True
         print(f"User prompt: {user_prompt}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     if response.function_calls:
-        print("\n~~function calls~~")
+        function_call_part = response.function_calls[0]
+        print("~~function calls~~")
         print(
-            f'Calling function: {response.function_calls[0].name}({response.function_calls[0].args
+            f'Calling function: {function_call_part.name}({function_call_part.args
         })')
+        print("~~now calling~~")
+        call_function(function_call_part, verbose)
     else:
-        print("\n~~response~~")
+        print("~~response~~")
         print(response.text)
 
 
+
+
 def function_definitions():
+    """ function for specifying all the callable function """
     schema_get_files_info = types.FunctionDeclaration(
         name="get_files_info",
         description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
@@ -69,8 +78,8 @@ def function_definitions():
             },
         ),
     )
-    schema_get_files_content = types.FunctionDeclaration(
-        name="get_files_content",
+    schema_get_file_content = types.FunctionDeclaration(
+        name="get_file_content",
         description="Return contents of a file in the specified directory, constrained to the working directory.",
         parameters=types.Schema(
             type=types.Type.OBJECT,
@@ -115,7 +124,7 @@ def function_definitions():
 
     return [
         schema_get_files_info,
-        schema_get_files_content,
+        schema_get_file_content,
         schema_write_file,
         schema_run_python_file,
         ]
