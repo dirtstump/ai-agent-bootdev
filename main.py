@@ -8,14 +8,24 @@ import call_function
 
 def main():
     """main function for boot.dev AI course"""
-    if len(sys.argv) < 2 or sys.argv[1][0] == "-":
+    user_args = sys.argv[1:]
+
+    verbose = False
+    if "--verbose" in user_args:
+        verbose = True
+        user_args.remove("--verbose")
+
+    if len(user_args) > 1:
+        print("error: too many prompts/args")
+        sys.exit(1)
+    if len(user_args) < 1 or user_args[0][0] == "-":
         print("error: no prompt given")
         sys.exit(1)
 
     load_dotenv()
 
     api_key = os.environ.get("GEMINI_API_KEY")
-    user_prompt = sys.argv[1]
+    user_prompt = user_args[0]
     model_name = "gemini-2.0-flash-001"
     system_prompt = """
     You are a helpful AI coding agent.
@@ -42,9 +52,7 @@ def main():
             system_instruction=system_prompt,
         ),
     )
-    verbose = False
-    if "--verbose" in sys.argv:
-        verbose = True
+    if verbose:
         print(f"User prompt: {user_prompt}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
@@ -54,8 +62,11 @@ def main():
         print(
             f'Calling function: {function_call_part.name}({function_call_part.args
         })')
-        print("~~now calling~~")
-        call_function(function_call_part, verbose)
+        function_call_result = call_function.call_function(function_call_part, verbose)
+        if not function_call_result.parts[0].function_response.response:
+            raise Exception("Error: no response in function response")
+        if verbose:
+            print(f"-> {function_call_result.parts[0].function_response.response}")
     else:
         print("~~response~~")
         print(response.text)
