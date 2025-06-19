@@ -1,11 +1,11 @@
 """function for limiting the files available to AI"""
 import os
 
-def get_files_info(working_directory, directory=None):
+def get_files_info(working_directory, directory="."):
     """limit the reach of the AI"""
     working_path = os.path.abspath(working_directory)
     # print(working_path)
-    check_path = os.path.abspath(working_path + "/" + directory)
+    check_path = os.path.abspath(os.path.join(working_path, directory))
     # print(check_path)
 
     if not check_path.startswith(working_path):
