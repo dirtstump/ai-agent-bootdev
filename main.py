@@ -59,9 +59,6 @@ def main():
     if response.function_calls:
         function_call_part = response.function_calls[0]
         print("~~function calls~~")
-        print(
-            f'Calling function: {function_call_part.name}({function_call_part.args
-        })')
         function_call_result = call_function.call_function(function_call_part, verbose)
         if not function_call_result.parts[0].function_response.response:
             raise Exception("Error: no response in function response")
