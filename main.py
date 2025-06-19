@@ -81,10 +81,6 @@ def main():
         else:
             loop = False
 
-        if verbose:
-            print("~~messages~~")
-            print(messages)
-
         loop_count -= 1
         if loop_count <= 0:
             loop = False
