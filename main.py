@@ -148,6 +148,10 @@ def function_definitions():
                     type=types.Type.STRING,
                     description="The python file to run, relative to the working directory. The file (ending in .py) and relative path must be provided.",
                 ),
+                "args": types.Schema(
+                    type=types.Type.STRING,
+                    description="Additional args to call with the python file. Will be formatted such as: example.py 'args in a string'",
+                ),
             },
         ),
     )
